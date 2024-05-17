@@ -39,6 +39,9 @@ def get_messages(chat_id):
     else:
         messages = []
         messagesDict[chat_id] = messages
+    if len(messages) > 8:
+        messages = messages[-8:];
+
     return messages
 
 
