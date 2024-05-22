@@ -59,12 +59,21 @@ async def photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await context.bot.send_message(chat_id=chat_id, text=error.args)
 
 
+async def help_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await context.bot.send_message(chat_id=update.effective_chat.id, text="""
+    Задавайте вопросы в чате. Бот помнит предыдущие 8 вопросов.
+    Присылайте картинку на анализ.
+    Просите нарисовать картинку по описанию, но для рисования используется отдельный бот, поэтому он не запомнит её. 
+    /help - Display this help message.
+    /reset - Clear the conversation history.
+    """)
+
+
 async def reset(update, context):
     chat_id = update.effective_chat.id
     # print('reset', chat_id)
     messages = get_messages(chat_id)
     del messages[:]
-
 
 
 def get_messages(chat_id):
@@ -84,9 +93,11 @@ application = ApplicationBuilder().token(telegramBotToken).build()
 text_handler = MessageHandler(filters.TEXT & (~filters.COMMAND), text)
 photo_handler = MessageHandler(filters.PHOTO & (~filters.COMMAND), photo)
 reset_handler = CommandHandler('reset', reset)
+help_handler = CommandHandler('help', help_cmd)
 
 application.add_handler(text_handler)
 application.add_handler(photo_handler)
 application.add_handler(reset_handler)
+application.add_handler(help_handler)
 
 application.run_polling()
